@@ -10,6 +10,7 @@ using FluentMigrator.Runner;
 using System.IO;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Data;
 using System.Reflection;
 
 namespace MetricsAgent
@@ -29,7 +30,6 @@ namespace MetricsAgent
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            ConfigureSqlLiteConnection(services);
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
             var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
             var mapper = mapperConfiguration.CreateMapper();
@@ -71,17 +71,6 @@ namespace MetricsAgent
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-        }
-
-        private void ConfigureSqlLiteConnection(IServiceCollection services)
-        {
-            var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            if (!File.Exists(@"metrics.db")) // если базы данных нету, то...
-            {
-                SQLiteConnection.CreateFile("metrics.db"); // создать базу данных, по указанному пути содаётся пустой файл базы данных
-            }
-            services.AddSingleton(connection);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

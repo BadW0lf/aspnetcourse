@@ -83,7 +83,7 @@ namespace MetricsAgent.Controllers
             }
 
             return Ok(response);
-        }
+        }*/
 
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuMetricCreateRequest request)
@@ -95,7 +95,7 @@ namespace MetricsAgent.Controllers
             });
 
             return Ok();
-        }*/
+        }
     }
 }
 
