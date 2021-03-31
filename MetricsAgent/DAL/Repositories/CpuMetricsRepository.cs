@@ -12,9 +12,6 @@ namespace MetricsAgent.DAL
         // строка подключения
         private const string ConnectionString = @"Data Source=metrics.db; Version=3;";
         
-        // наше соединение с базой данных
-        private IDbConnection connection;
-
         // инжектируем соединение с базой данных в наш репозиторий через конструктор
         public CpuMetricsRepository()
         {
@@ -24,7 +21,7 @@ namespace MetricsAgent.DAL
 
         public void Create(CpuMetric item)
         {
-            using (connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
                 //  запрос на вставку данных с плейсхолдерами для параметров
                 connection.Execute("INSERT INTO cpumetrics(value, time) VALUES(@value, @time)", 
@@ -42,7 +39,7 @@ namespace MetricsAgent.DAL
 
         public void Delete(int id)
         {
-            using (connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Execute("DELETE FROM cpumetrics WHERE id=@id",
                     new
@@ -54,7 +51,7 @@ namespace MetricsAgent.DAL
 
         public void Update(CpuMetric item)
         {
-            using (connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Execute("UPDATE cpumetrics SET value = @value, time = @time WHERE id=@id",
                     new
@@ -68,7 +65,7 @@ namespace MetricsAgent.DAL
 
         public IList<CpuMetric> GetAll()
         {
-            using (connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
                 // читаем при помощи Query и в шаблон подставляем тип данных
                 // объект которого Dapper сам и заполнит его поля
@@ -79,7 +76,7 @@ namespace MetricsAgent.DAL
 
         public CpuMetric GetById(int id)
         {
-            using (connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
                 return connection.QuerySingle<CpuMetric>("SELECT Id, Time, Value FROM cpumetrics WHERE id=@id",
                     new {id = id});
